@@ -1,8 +1,8 @@
 # ☕ 카페 1초 레시피 & 매뉴얼 & 고객 관리 (Cafe Quick-Cheat)
 
-### 🚀 앱 실행 링크 (Click to Run)
-*   **[🖥️ 내 PC에서 즉시 실행하기 (클릭)](./index.html)** *(로컬 브라우저 구동)*
-*   **[🌐 웹 배포 링크 바로가기 (GitHub Pages)](https://lgw7126.github.io/antigravity-Small-Biz-01/)** *(인터넷이 연결된 환경에서 즉시 실행)*
+### 🚀 즉시 앱 실행하기 (Click to Run)
+*   **[👉 클릭하여 즉시 실행 (GitHub Pages 웹 배포)](https://lgw7126.github.io/antigravity-Small-Biz-01/)** *(깃허브 웹에서 한 번의 클릭으로 즉시 실행하려면 이 링크를 누르세요!)*
+*   **[🖥️ 로컬 파일로 열기 (내 PC 오프라인 구동)](./index.html)** *(다운로드한 PC 환경에서 오프라인으로 실행할 때)*
 
 ---
 
