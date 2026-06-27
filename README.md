@@ -1,7 +1,7 @@
 # ☕ 카페 1초 레시피 & 매뉴얼 & 고객 관리 (Cafe Quick-Cheat)
 
 ### 🚀 앱 실행 링크 (Click to Run)
-*   **[🖥️ 내 PC에서 즉시 실행하기 (클릭)](file:///c:/Users/kikin/Projects/antigravity-small-biz-01/index.html)** *(로컬 브라우저 구동)*
+*   **[🖥️ 내 PC에서 즉시 실행하기 (클릭)](./index.html)** *(로컬 브라우저 구동)*
 *   **[🌐 웹 배포 링크 바로가기 (GitHub Pages)](https://lgw7126.github.io/antigravity-Small-Biz-01/)** *(인터넷이 연결된 환경에서 즉시 실행)*
 
 ---
@@ -35,7 +35,7 @@
 ## 📖 사용 방법 (How to Use)
 
 ### 1. 기본 실행 및 PWA 앱 설치
-*   **PC에서 실행**: 다운로드한 폴더 안의 [index.html](file:///c:/Users/kikin/Projects/antigravity-small-biz-01/index.html) 파일을 더블 클릭하여 크롬, 사파리 등의 브라우저로 실행합니다.
+*   **PC에서 실행**: 다운로드한 폴더 안의 [index.html](./index.html) 파일을 더블 클릭하여 크롬, 사파리 등의 브라우저로 실행합니다.
 *   **홈 화면에 추가 (앱 설치)**: 모바일/태블릿 브라우저로 접속 시 '홈 화면에 추가' 또는 크롬의 '앱 설치' 버튼을 누르면 스마트폰 바탕화면에 바로가기 아이콘이 생겨 독립형 앱으로 바로 열 수 있습니다.
 
 ### 2. 초스피드 실시간 검색
