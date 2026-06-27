@@ -1,0 +1,18 @@
+{
+  "name": "카페 1초 레시피 & 비상 매뉴얼",
+  "short_name": "1초 레시피",
+  "description": "인터넷 연결 없이 즉각 찾아보는 카페 레시피 및 비상 매뉴얼",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#0b0f19",
+  "theme_color": "#f59e0b",
+  "orientation": "any",
+  "icons": [
+    {
+      "src": "./icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
+  ]
+}

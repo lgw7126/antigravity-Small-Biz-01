@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" fill="none">
+  <!-- Rounded modern dark background -->
+  <rect width="512" height="512" rx="120" fill="#0f172a"/>
+  <!-- Coffee accent gradient details -->
+  <circle cx="256" cy="270" r="160" fill="#1e293b"/>
+  <!-- Coffee Cup -->
+  <path d="M160 192h160v120c0 33-27 60-60 60h-40c-33 0-60-27-60-60V192z" fill="#f59e0b"/>
+  <!-- Cup Handle -->
+  <path d="M320 220h20c16 0 30 14 30 30v20c0 16-14 30-30 30h-20" stroke="#f59e0b" stroke-width="18" stroke-linecap="round"/>
+  <!-- Steam lines -->
+  <path d="M200 110c4-12-4-24 0-36M240 110c4-12-4-24 0-36M280 110c4-12-4-24 0-36" stroke="#fef08a" stroke-width="12" stroke-linecap="round"/>
+</svg>

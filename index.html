@@ -1,0 +1,1980 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>카페 1초 로컬 커닝페이퍼</title>
+  
+  <!-- Web App Capabilities (PWA Meta Tags) -->
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="mobile-web-app-capable" content="yes">
+  <link rel="manifest" href="manifest.json">
+  
+  <style>
+    /* ==========================================================================
+       🎨 DESIGN SYSTEM & VARIABLES (Light & Dark Theme)
+       ========================================================================== */
+    :root {
+      /* Theme Transition */
+      --transition-speed: 0.2s;
+      
+      /* Light Mode Theme */
+      --body-bg: hsl(30, 20%, 95%);
+      --card-bg: hsl(0, 0%, 100%);
+      --card-border: 1px solid hsla(24, 10%, 80%, 0.35);
+      --text-main: hsl(24, 25%, 12%);
+      --text-muted: hsl(24, 15%, 45%);
+      
+      /* Category Accents */
+      --recipe-accent: hsl(24, 75%, 42%);
+      --sos-accent: hsl(0, 75%, 45%);
+      --customer-accent: hsl(200, 75%, 40%);
+      --accent: hsl(24, 75%, 42%);
+      --accent-hover: hsl(24, 85%, 35%);
+      --accent-light: hsla(24, 75%, 42%, 0.08);
+      
+      --recipe-badge-bg: hsl(28, 100%, 93%);
+      --recipe-badge-text: hsl(28, 85%, 35%);
+      --sos-badge-bg: hsl(0, 100%, 93%);
+      --sos-badge-text: hsl(0, 85%, 35%);
+      --customer-badge-bg: hsl(200, 100%, 93%);
+      --customer-badge-text: hsl(200, 85%, 30%);
+      
+      --highlight-bg: hsl(45, 100%, 85%);
+      --highlight-text: hsl(30, 85%, 20%);
+      --highlight-border: hsl(45, 100%, 65%);
+      
+      --shadow-sm: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+      --shadow-md: 0 10px 15px -3px rgba(0, 0, 0, 0.08), 0 4px 6px -2px rgba(0, 0, 0, 0.04);
+      --shadow-lg: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+      
+      --search-bg: #ffffff;
+      --search-border: 2px solid hsl(24, 15%, 80%);
+      --search-focus-border: 2px solid hsl(24, 75%, 42%);
+      
+      --kbd-bg: hsl(24, 10%, 90%);
+      --kbd-text: hsl(24, 15%, 25%);
+      
+      --glass-blur: blur(12px);
+    }
+
+    [data-theme="dark"] {
+      /* Dark Mode Theme */
+      --body-bg: hsl(220, 20%, 8%);
+      --card-bg: hsl(220, 18%, 13%);
+      --card-border: 1px solid hsla(220, 10%, 80%, 0.08);
+      --text-main: hsl(220, 20%, 92%);
+      --text-muted: hsl(220, 10%, 65%);
+      
+      /* Category Accents */
+      --recipe-accent: hsl(36, 85%, 62%);
+      --sos-accent: hsl(0, 85%, 62%);
+      --customer-accent: hsl(200, 85%, 62%);
+      --accent: hsl(36, 85%, 62%);
+      --accent-hover: hsl(36, 95%, 52%);
+      --accent-light: hsla(36, 85%, 62%, 0.12);
+      
+      --recipe-badge-bg: hsla(36, 85%, 62%, 0.15);
+      --recipe-badge-text: hsl(36, 85%, 62%);
+      --sos-badge-bg: hsla(0, 85%, 62%, 0.15);
+      --sos-badge-text: hsl(0, 95%, 72%);
+      --customer-badge-bg: hsla(200, 85%, 62%, 0.15);
+      --customer-badge-text: hsl(200, 85%, 62%);
+      
+      --highlight-bg: hsla(45, 100%, 50%, 0.22);
+      --highlight-text: hsl(45, 100%, 75%);
+      --highlight-border: hsla(45, 100%, 60%, 0.4);
+      
+      --shadow-sm: 0 4px 6px -1px rgba(0, 0, 0, 0.2), 0 2px 4px -1px rgba(0, 0, 0, 0.1);
+      --shadow-md: 0 10px 15px -3px rgba(0, 0, 0, 0.3), 0 4px 6px -2px rgba(0, 0, 0, 0.2);
+      --shadow-lg: 0 20px 25px -5px rgba(0, 0, 0, 0.4), 0 10px 10px -5px rgba(0, 0, 0, 0.3);
+      
+      --search-bg: hsl(220, 18%, 15%);
+      --search-border: 2px solid hsl(220, 15%, 22%);
+      --search-focus-border: 2px solid hsl(36, 85%, 62%);
+      
+      --kbd-bg: hsl(220, 10%, 25%);
+      --kbd-text: hsl(220, 10%, 80%);
+    }
+
+    /* ==========================================================================
+       🧹 RESET & BASE STYLES
+       ========================================================================== */
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Malgun Gothic", sans-serif, "Apple Color Emoji", "Segoe UI Emoji";
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      letter-spacing: -0.02em;
+    }
+
+    body {
+      background-color: var(--body-bg);
+      color: var(--text-main);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 0 16px 24px 16px;
+      transition: background-color var(--transition-speed), color var(--transition-speed);
+      overflow-x: hidden;
+    }
+
+    html {
+      font-size: 16px;
+    }
+
+    /* ==========================================================================
+       🖥️ LAYOUT STRUCTURE
+       ========================================================================== */
+    .app-container {
+      width: 100%;
+      max-width: 900px;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      flex-grow: 1;
+    }
+
+    /* ==========================================================================
+       💎 HEADER SECTION
+       ========================================================================== */
+    .app-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 14px 18px;
+      background: var(--card-bg);
+      backdrop-filter: var(--glass-blur);
+      -webkit-backdrop-filter: var(--glass-blur);
+      border: var(--card-border);
+      border-radius: 16px;
+      box-shadow: var(--shadow-sm);
+      margin-top: 16px;
+    }
+
+    .brand-area {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .brand-title {
+      font-size: 1.3rem;
+      font-weight: 800;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--text-main);
+    }
+
+    .brand-title span {
+      background: linear-gradient(45deg, var(--accent), hsl(15, 80%, 50%));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .status-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: hsl(145, 80%, 30%);
+      background-color: hsl(145, 100%, 93%);
+      padding: 3px 8px;
+      border-radius: 9999px;
+      width: fit-content;
+    }
+    
+    [data-theme="dark"] .status-badge {
+      color: hsl(145, 90%, 70%);
+      background-color: hsla(145, 80%, 40%, 0.2);
+    }
+
+    .status-dot {
+      width: 6px;
+      height: 6px;
+      background-color: hsl(145, 85%, 45%);
+      border-radius: 50%;
+      animation: pulse 1.8s infinite;
+    }
+
+    @keyframes pulse {
+      0% { transform: scale(0.9); opacity: 0.6; }
+      50% { transform: scale(1.2); opacity: 1; }
+      100% { transform: scale(0.9); opacity: 0.6; }
+    }
+
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .theme-toggle-btn {
+      background: var(--accent-light);
+      border: 1px solid var(--card-border);
+      color: var(--accent);
+      cursor: pointer;
+      width: 44px;
+      height: 44px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.25rem;
+      transition: all 0.2s ease;
+    }
+
+    .theme-toggle-btn:hover {
+      background: var(--accent);
+      color: #ffffff;
+      transform: translateY(-2px);
+    }
+
+    /* ==========================================================================
+       🎫 MAIN TAB SEPARATION STYLING (레시피 / 업무 매뉴얼 / 고객 관리)
+       ========================================================================== */
+    .main-tabs-container {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 12px;
+      border-bottom: 2px solid var(--card-border);
+      padding-bottom: 8px;
+    }
+
+    .main-tab {
+      flex: 1;
+      padding: 14px 12px;
+      font-size: 1rem;
+      font-weight: 800;
+      border: none;
+      background: transparent;
+      color: var(--text-muted);
+      cursor: pointer;
+      border-radius: 12px;
+      transition: all 0.2s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      border: 1px solid transparent;
+    }
+
+    @media (max-width: 480px) {
+      .main-tab {
+        font-size: 0.85rem;
+        padding: 10px 6px;
+      }
+    }
+
+    .main-tab:hover {
+      background: var(--accent-light);
+      color: var(--accent);
+    }
+
+    .main-tab.active {
+      background: var(--accent);
+      color: #ffffff;
+      box-shadow: var(--shadow-sm);
+      border-color: var(--accent);
+    }
+
+    /* ==========================================================================
+       🔍 SEARCH SECTION
+       ========================================================================== */
+    .search-wrapper {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background-color: var(--body-bg);
+      padding: 12px 0;
+      border-bottom: 1px solid transparent;
+      transition: border-color 0.2s ease;
+    }
+
+    .search-box-container {
+      position: relative;
+      width: 100%;
+      display: flex;
+      align-items: center;
+    }
+
+    .search-input {
+      width: 100%;
+      height: 56px;
+      padding: 0 60px 0 52px;
+      font-size: 1.25rem;
+      font-weight: 600;
+      border-radius: 14px;
+      border: var(--search-border);
+      background-color: var(--search-bg);
+      color: var(--text-main);
+      box-shadow: var(--shadow-sm);
+      transition: all 0.2s ease;
+      outline: none;
+      letter-spacing: -0.015em;
+    }
+
+    .search-input:focus {
+      border: var(--search-focus-border);
+      box-shadow: var(--shadow-md), 0 0 0 3px var(--accent-light);
+    }
+
+    .search-icon-left {
+      position: absolute;
+      left: 18px;
+      font-size: 1.3rem;
+      color: var(--text-muted);
+      pointer-events: none;
+    }
+
+    .search-clear-btn {
+      position: absolute;
+      right: 10px;
+      width: 36px;
+      height: 36px;
+      border-radius: 8px;
+      border: none;
+      background: transparent;
+      color: var(--text-muted);
+      font-size: 1rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s ease;
+    }
+
+    .search-clear-btn:hover {
+      background: var(--accent-light);
+      color: var(--accent);
+    }
+
+    /* ==========================================================================
+       📇 CARDS GRID & CARD DESIGNS
+       ========================================================================== */
+    .cards-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+      gap: 20px;
+      margin-bottom: 24px;
+    }
+
+    @media (max-width: 600px) {
+      .cards-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .card {
+      background: var(--card-bg);
+      border: var(--card-border);
+      border-radius: 16px;
+      box-shadow: var(--shadow-sm);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+      cursor: pointer;
+      position: relative;
+      border-left: 6px solid transparent;
+    }
+
+    .card.card-recipe {
+      border-left-color: var(--recipe-accent);
+    }
+
+    .card.card-sos {
+      border-left-color: var(--sos-accent);
+    }
+
+    .card.card-customer {
+      border-left-color: var(--customer-accent);
+    }
+
+    /* 🌶️ Blacklist Card Styles Override */
+    .card.card-blacklist {
+      background-color: #FDEDEC !important;
+      border: 1px solid #E74C3C !important;
+      border-left: 6px solid #E74C3C !important;
+    }
+    
+    .card.card-blacklist .card-title {
+      color: #C0392B !important;
+    }
+
+    .card.card-blacklist .card-content,
+    .card.card-blacklist .line-text {
+      color: #7B241C !important;
+    }
+
+    .card.card-blacklist .highlight-badge {
+      background-color: hsla(355, 75%, 45%, 0.15) !important;
+      border: 1px solid hsla(355, 75%, 45%, 0.4) !important;
+      color: #922B21 !important;
+    }
+
+    /* Dark Mode Blacklist override */
+    [data-theme="dark"] .card.card-blacklist {
+      background-color: hsl(355, 30%, 15%) !important;
+      border: 1px solid hsl(355, 75%, 45%) !important;
+      border-left: 6px solid hsl(355, 80%, 55%) !important;
+    }
+    
+    [data-theme="dark"] .card.card-blacklist .card-title {
+      color: hsl(0, 85%, 90%) !important;
+    }
+
+    [data-theme="dark"] .card.card-blacklist .card-content,
+    [data-theme="dark"] .card.card-blacklist .line-text {
+      color: hsl(0, 80%, 85%) !important;
+    }
+
+    [data-theme="dark"] .card.card-blacklist .highlight-badge {
+      background-color: hsla(355, 75%, 45%, 0.3) !important;
+      border: 1px solid hsla(355, 75%, 45%, 0.6) !important;
+      color: hsl(0, 85%, 95%) !important;
+    }
+
+    .card-type-customer {
+      background-color: var(--customer-badge-bg);
+      color: var(--customer-badge-text);
+    }
+
+    .card:hover {
+      transform: translateY(-3px);
+      box-shadow: var(--shadow-md);
+    }
+
+    .card-header {
+      padding: 20px 20px 8px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .card-title-group {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      flex-grow: 1;
+    }
+
+    .card-title {
+      font-size: 1.15rem;
+      font-weight: 700;
+      color: var(--text-main);
+      line-height: 1.4;
+      letter-spacing: -0.025em;
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+
+    .card-type-badge {
+      font-size: 0.75rem;
+      font-weight: 800;
+      padding: 3px 8px;
+      border-radius: 6px;
+      white-space: nowrap;
+    }
+
+    .card-type-recipe {
+      background-color: var(--recipe-badge-bg);
+      color: var(--recipe-badge-text);
+    }
+
+    .card-type-sos {
+      background-color: var(--sos-badge-bg);
+      color: var(--sos-badge-text);
+    }
+
+    .card-body {
+      padding: 4px 20px 20px 20px;
+      flex-grow: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
+      gap: 10px;
+    }
+
+    .card-content {
+      font-size: 1.12rem;
+      color: var(--text-main);
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .content-line {
+      line-height: 1.6;
+      letter-spacing: -0.015em;
+    }
+
+    .list-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+    }
+
+    .line-marker {
+      font-weight: 700;
+      color: var(--accent);
+      flex-shrink: 0;
+      min-width: 1.3rem;
+      text-align: left;
+    }
+
+    .line-text {
+      flex-grow: 1;
+      word-break: keep-all;
+    }
+
+    .content-space {
+      height: 6px;
+    }
+
+    .highlight-badge {
+      display: inline-block;
+      background: var(--highlight-bg);
+      color: var(--highlight-text);
+      padding: 1px 7px;
+      border-radius: 6px;
+      font-weight: 700;
+      border: 1px solid var(--highlight-border);
+      margin: 0 2px;
+      font-size: 0.95em;
+      vertical-align: baseline;
+    }
+
+    /* ==========================================================================
+       🔍 EMPTY STATE DESIGN
+       ========================================================================== */
+    .empty-state {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 60px 24px;
+      background: var(--card-bg);
+      border-radius: 20px;
+      border: var(--card-border);
+      box-shadow: var(--shadow-sm);
+      text-align: center;
+      gap: 16px;
+    }
+
+    .empty-icon {
+      font-size: 3.5rem;
+      animation: float 3s ease-in-out infinite;
+    }
+
+    @keyframes float {
+      0% { transform: translateY(0px); }
+      50% { transform: translateY(-10px); }
+      100% { transform: translateY(0px); }
+    }
+
+    .empty-title {
+      font-size: 1.25rem;
+      font-weight: 800;
+      color: var(--text-main);
+    }
+
+    .empty-desc {
+      font-size: 0.95rem;
+      color: var(--text-muted);
+      max-width: 320px;
+    }
+
+    /* ==========================================================================
+       💡 ZOOM MODAL SYSTEM (For Reading from a Distance)
+       ========================================================================== */
+    .modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.6);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      z-index: 1000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.25s ease;
+    }
+
+    .modal-overlay.active {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .modal-container {
+      background: var(--card-bg);
+      border: var(--card-border);
+      border-radius: 24px;
+      box-shadow: var(--shadow-lg);
+      width: 100%;
+      max-width: 680px;
+      max-height: 90vh;
+      display: flex;
+      flex-direction: column;
+      transform: translateY(20px);
+      transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+      overflow: hidden;
+    }
+
+    .modal-overlay.active .modal-container {
+      transform: translateY(0);
+    }
+
+    .modal-header {
+      padding: 20px 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid var(--card-border);
+    }
+
+    .modal-title {
+      font-size: 1.4rem;
+      font-weight: 800;
+      color: var(--text-main);
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .modal-close-btn {
+      background: var(--accent-light);
+      border: none;
+      color: var(--accent);
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.1rem;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .modal-close-btn:hover {
+      background: var(--accent);
+      color: white;
+    }
+
+    .modal-body {
+      padding: 24px;
+      overflow-y: auto;
+      font-size: 1.5rem;
+      line-height: 1.7;
+      color: var(--text-main);
+      white-space: pre-line;
+    }
+
+    .modal-body .highlight-badge {
+      font-size: 1.4rem;
+      padding: 4px 10px;
+    }
+
+    .modal-footer {
+      padding: 16px 24px;
+      border-top: 1px solid var(--card-border);
+      display: flex;
+      justify-content: flex-end;
+      gap: 12px;
+      background: hsla(0, 0%, 50%, 0.02);
+    }
+
+    .action-btn {
+      padding: 12px 20px;
+      border-radius: 12px;
+      border: 1px solid var(--card-border);
+      background: var(--card-bg);
+      color: var(--text-main);
+      font-weight: 700;
+      font-size: 0.95rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      transition: all 0.2s ease;
+    }
+
+    .action-btn:hover {
+      background: var(--accent-light);
+      color: var(--accent);
+      border-color: var(--accent);
+    }
+
+    .action-btn-primary {
+      background: var(--accent);
+      color: #ffffff;
+      border-color: var(--accent);
+    }
+
+    .action-btn-primary:hover {
+      background: var(--accent-hover);
+      color: #ffffff;
+    }
+
+    .toast {
+      position: fixed;
+      bottom: 24px;
+      left: 50%;
+      transform: translateX(-50%) translateY(40px);
+      background-color: hsl(24, 25%, 12%);
+      color: white;
+      padding: 12px 24px;
+      border-radius: 12px;
+      font-size: 0.95rem;
+      font-weight: 700;
+      box-shadow: var(--shadow-lg);
+      z-index: 2000;
+      opacity: 0;
+      pointer-events: none;
+      transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .toast.active {
+      transform: translateX(-50%) translateY(0);
+      opacity: 1;
+    }
+
+    /* ==========================================================================
+       📖 APP FOOTER / INFO SECTION
+       ========================================================================== */
+    .app-footer {
+      margin-top: auto;
+      text-align: center;
+      padding: 24px 0 12px;
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .kbd-shortcut {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      background: var(--kbd-bg);
+      color: var(--kbd-text);
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-family: monospace;
+      font-weight: 700;
+      font-size: 0.75rem;
+    }
+
+    /* ==========================================================================
+       ⚙️ ADMIN PANEL STYLING
+       ========================================================================== */
+    .admin-dashboard-card {
+      background: var(--card-bg);
+      border: var(--card-border);
+      border-radius: 16px;
+      box-shadow: var(--shadow-sm);
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .admin-dash-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .admin-dash-title {
+      font-size: 1.25rem;
+      font-weight: 800;
+      color: var(--text-main);
+    }
+
+    .backup-panel {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid var(--card-border);
+    }
+
+    /* Form Controls */
+    .form-body {
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .form-label {
+      font-size: 0.9rem;
+      font-weight: 700;
+      color: var(--text-main);
+    }
+
+    .form-input {
+      width: 100%;
+      height: 46px;
+      padding: 0 14px;
+      border-radius: 8px;
+      border: 1px solid var(--card-border);
+      background-color: var(--search-bg);
+      color: var(--text-main);
+      font-size: 0.95rem;
+      font-weight: 600;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+
+    .form-input:focus, .form-textarea:focus {
+      border-color: var(--accent);
+    }
+
+    .form-textarea {
+      width: 100%;
+      height: 150px;
+      padding: 12px 14px;
+      border-radius: 8px;
+      border: 1px solid var(--card-border);
+      background-color: var(--search-bg);
+      color: var(--text-main);
+      font-size: 0.95rem;
+      font-weight: 600;
+      outline: none;
+      resize: vertical;
+      line-height: 1.5;
+    }
+
+    .form-radio-group {
+      display: flex;
+      gap: 20px;
+      margin-top: 4px;
+      flex-wrap: wrap;
+    }
+
+    .form-radio-label {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.95rem;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .form-radio-label input {
+      width: 18px;
+      height: 18px;
+      accent-color: var(--accent);
+      cursor: pointer;
+    }
+
+    /* Admin Table Styling */
+    .table-container {
+      width: 100%;
+      overflow-x: auto;
+      border: 1px solid var(--card-border);
+      border-radius: 12px;
+    }
+
+    .admin-table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: left;
+      font-size: 0.95rem;
+    }
+
+    .admin-table th, .admin-table td {
+      padding: 14px 16px;
+      border-bottom: 1px solid var(--card-border);
+    }
+
+    .admin-table th {
+      background-color: hsla(0, 0%, 50%, 0.03);
+      font-weight: 700;
+      color: var(--text-muted);
+      font-size: 0.85rem;
+    }
+
+    .admin-table tr:last-child td {
+      border-bottom: none;
+    }
+
+    .admin-table tr:hover td {
+      background-color: hsla(0, 0%, 50%, 0.01);
+    }
+
+    .table-actions {
+      display: flex;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    .table-btn {
+      padding: 6px 10px;
+      border-radius: 6px;
+      border: 1px solid var(--card-border);
+      background: transparent;
+      color: var(--text-main);
+      cursor: pointer;
+      font-size: 0.85rem;
+      font-weight: 700;
+      transition: all 0.2s ease;
+    }
+
+    .table-btn:hover {
+      background: var(--accent-light);
+      color: var(--accent);
+      border-color: var(--accent);
+    }
+
+    .table-btn-danger:hover {
+      background: hsla(0, 85%, 60%, 0.08);
+      color: hsl(0, 85%, 60%);
+      border-color: hsl(0, 85%, 60%);
+    }
+  </style>
+</head>
+<body>
+
+  <div class="app-container">
+    
+    <!-- 1. Header Section -->
+    <header class="app-header">
+      <div class="brand-area">
+        <h1 class="brand-title">☕ <span>1초 레시피 & 매뉴얼</span></h1>
+        <div class="status-badge">
+          <div class="status-dot"></div>
+          오프라인 로컬 작동중
+        </div>
+      </div>
+      
+      <div class="header-actions">
+        <button class="theme-toggle-btn" id="adminToggleBtn" aria-label="사장님 모드" title="사장님 설정">
+          ⚙️
+        </button>
+        <button class="theme-toggle-btn" id="themeToggleBtn" aria-label="다크/라이트 모드 전환" title="다크/라이트 모드 전환">
+          🌙
+        </button>
+      </div>
+    </header>
+
+    <!-- 2. Main Search Screen Container (Visible by default) -->
+    <div id="searchScreen">
+      <!-- Search & Filter Stick-box -->
+      <div class="search-wrapper">
+        <!-- 👥 상단 분리 탭 (레시피 / 업무 매뉴얼 / 고객 관리) -->
+        <div class="main-tabs-container">
+          <button class="main-tab active" id="tabRecipe" data-tab="recipe">☕ 레시피</button>
+          <button class="main-tab" id="tabSos" data-tab="sos">🚨 업무 매뉴얼</button>
+          <button class="main-tab" id="tabCustomer" data-tab="customer">👥 고객 관리</button>
+        </div>
+
+        <!-- 🔍 실시간 검색창 -->
+        <div class="search-box-container">
+          <span class="search-icon-left">🔍</span>
+          <input 
+            type="text" 
+            id="searchInput" 
+            class="search-input" 
+            placeholder="메뉴명, 초성(ㅂㄴㄹ) 등으로 검색..." 
+            autocomplete="off"
+            autofocus
+          >
+          <button class="search-clear-btn" id="searchClearBtn" aria-label="검색어 지우기" title="검색어 지우기" style="display: none;">
+            ❌
+          </button>
+        </div>
+      </div>
+
+      <!-- Main Cards Grid -->
+      <main class="cards-grid" id="cardsGrid">
+        <!-- Dynamic cards loaded via JavaScript -->
+      </main>
+
+      <!-- Empty State -->
+      <div class="empty-state" id="emptyState" style="display: none;">
+        <div class="empty-icon">🔍</div>
+        <div class="empty-title" id="emptyTitle">검색 결과가 없습니다</div>
+        <div class="empty-desc" id="emptyDesc">단어의 초성만 입력하거나 다른 키워드를 입력해 보세요. (예: ㅂㄴㄹ, ㅇㅁㄹ)</div>
+      </div>
+    </div>
+
+    <!-- 3. Admin Management Screen Container (Hidden by default) -->
+    <div id="adminScreen" style="display: none;">
+      <div class="admin-dashboard-card">
+        <div class="admin-dash-header">
+          <h2 class="admin-dash-title">⚙️ 사장님 매장 데이터 관리</h2>
+          <div style="display: flex; gap: 10px;">
+            <button class="action-btn" id="closeAdminBtn">↩️ 홈 화면으로</button>
+            <button class="action-btn action-btn-primary" id="addNewBtn">➕ 새 항목 추가</button>
+          </div>
+        </div>
+        
+        <!-- Backup & Restore Panel -->
+        <div class="backup-panel">
+          <button class="action-btn" id="exportBtn">📥 백업 다운로드 (JSON)</button>
+          <label class="action-btn" style="cursor: pointer;">
+            📤 백업 불러오기
+            <input type="file" id="importFile" accept=".json" style="display: none;">
+          </label>
+          <button class="action-btn" id="resetBtn" style="color: hsl(0, 85%, 60%); border-color: hsla(0, 85%, 60%, 0.3);">🔄 기본값 초기화</button>
+        </div>
+
+        <!-- Items Table -->
+        <div class="table-container">
+          <table class="admin-table">
+            <thead>
+              <tr>
+                <th style="width: 100px;">분류</th>
+                <th>제목(이름)</th>
+                <th>검색 키워드 / 초성 / 번호</th>
+                <th style="text-align: center; width: 140px;">작업</th>
+              </tr>
+            </thead>
+            <tbody id="adminTableBody">
+              <!-- Filled via JS -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- 4. Footer Information -->
+    <footer class="app-footer">
+      <div>© Cafe Quick-Cheat. 인터넷 연결 없이 언제나 작동합니다.</div>
+      <div>
+        <span class="kbd-shortcut">ESC</span> 검색창 지우기 | <span class="kbd-shortcut">Tab</span> 탭 전환
+      </div>
+    </footer>
+
+  </div>
+
+  <!-- 5. Zoom Detailed View Modal -->
+  <div class="modal-overlay" id="zoomModal">
+    <div class="modal-container">
+      <div class="modal-header">
+        <h2 class="modal-title" id="modalTitle">상세 정보</h2>
+        <button class="modal-close-btn" id="modalCloseBtn" aria-label="닫기">❌</button>
+      </div>
+      <div class="modal-body" id="modalBody">
+        <!-- Filled dynamically -->
+      </div>
+      <div class="modal-footer">
+        <button class="action-btn" id="modalCopyBtn">📋 복사하기</button>
+        <button class="action-btn action-btn-primary" id="modalCloseActionBtn">확인</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 6. Editor Form Modal -->
+  <div class="modal-overlay" id="editorModal">
+    <div class="modal-container" style="max-width: 580px;">
+      <div class="modal-header">
+        <h2 class="modal-title" id="editorModalTitle">항목 편집</h2>
+        <button class="modal-close-btn" id="editorModalCloseBtn" aria-label="닫기">❌</button>
+      </div>
+      <form id="editorForm">
+        <input type="hidden" id="editItemId">
+        <div class="form-body">
+          <div class="form-group">
+            <label class="form-label">분류</label>
+            <div class="form-radio-group">
+              <label class="form-radio-label">
+                <input type="radio" name="itemType" value="recipe" checked>
+                ☕ 레시피
+              </label>
+              <label class="form-radio-label">
+                <input type="radio" name="itemType" value="sos">
+                🚨 업무 매뉴얼
+              </label>
+              <label class="form-radio-label">
+                <input type="radio" name="itemType" value="customer">
+                👥 고객 관리
+              </label>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="itemTitle">제목 (고객명 / 메뉴명)</label>
+            <input type="text" id="itemTitle" class="form-input" placeholder="예: 아이스 아메리카노 또는 홍길동" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="itemKeyword">초성 및 검색 키워드 / 전화번호</label>
+            <input type="text" id="itemKeyword" class="form-input" placeholder="예: ㅇㅁㄹㅋㄴ 아아 또는 01012341234 1234" required>
+          </div>
+
+          <!-- 👥 고객 관리 탭 전용 필드 -->
+          <div id="customerFormFields" style="display: none;">
+            <div class="form-group" style="margin-top: 6px;">
+              <label class="form-label" for="itemVisits">방문 횟수</label>
+              <input type="number" id="itemVisits" class="form-input" min="0" value="0">
+            </div>
+            <div class="form-group" style="margin-top: 6px;">
+              <label class="form-label">블랙리스트 (요주의) 여부</label>
+              <div class="form-radio-group">
+                <label class="form-radio-label">
+                  <input type="radio" name="itemIsBlacklist" value="true">
+                  🌶️ 요주의 (블랙리스트)
+                </label>
+                <label class="form-radio-label">
+                  <input type="radio" name="itemIsBlacklist" value="false" checked>
+                  일반/단골 고객
+                </label>
+              </div>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="itemContent">상세 내용 (특이사항 / 제조법)</label>
+            <textarea id="itemContent" class="form-textarea" placeholder="1. 16oz 컵에 얼음 채우기&#10;2. 에스프레소 2샷 붓기...&#10;&#10;※ 강조하고 싶은 꿀팁이나 비상 수칙은 [하부장]과 같이 대괄호 안에 써넣어 주세요!" required></textarea>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="action-btn" id="editorCancelBtn">취소</button>
+          <button type="submit" class="action-btn action-btn-primary">저장하기</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- 7. Copy Confirmation Toast -->
+  <div class="toast" id="toast">📋 복사 완료!</div>
+
+
+  <!-- ==========================================================================
+       🖥️ JAVASCRIPT SYSTEM
+       ========================================================================== -->
+  <script>
+    // ==========================================================================
+    // 🧠 [사장님 필독] 매장 데이터베이스 설정 (레시피 & 비상 매뉴얼 & 고객 정보)
+    //    - 브라우저에 데이터가 저장되기 전, 아래 기본 항목들을 변경할 수 있습니다.
+    //    - 브라우저 로컬 저장소에 이미 저장된 데이터가 있을 경우,
+    //      우측 상단 ⚙️ 사장님 모드에서 [🔄 기본값 초기화] 버튼을 누르면 아래 정보로 덮어씌워집니다.
+    // ==========================================================================
+
+    // --- [1] 레시피 및 비상 매뉴얼 데이터 (type: "recipe" 또는 "sos") ---
+    const defaultRecipes = [
+      {
+        type: "recipe",
+        keyword: "ㅂㄴㄹ 아이스바닐라라떼 바닐라라떼",
+        title: "아이스 바닐라 라떼 (Ice Vanilla Latte)",
+        content: "1. 16oz 얼음컵 가득 준비\n2. 바닐라 시럽 [3펌프] 넣기 [시럽: 오른쪽 하부장]\n3. 에스프레소 [2샷] 추출 후 주입\n4. 우유 [150ml] 부은 후 잘 저어서 서빙"
+      },
+      {
+        type: "recipe",
+        keyword: "ㅇㅁㄹㅋㄴ 아이스아메리카노 아메리카노 뜨아 아아",
+        title: "아이스 아메리카노 (Ice Americano)",
+        content: "1. 16oz 컵에 얼음 가득 넣기\n2. 정수 물을 물 선(L1)까지 채우기\n3. 에스프레소 [2샷] 골고루 올리기\n※ [빨대]와 함께 서빙"
+      },
+      {
+        type: "recipe",
+        keyword: "ㅋㅍㄹㄸ 라떼 따뜻한라떼 카페라떼",
+        title: "따뜻한 카페 라떼 (Hot Cafe Latte)",
+        content: "1. 스팀 피처에 우유 [200ml] 계량\n2. 고운 폼으로 우유 스팀 (온도 [60~65도] 세팅)\n3. 잔에 에스프레소 [2샷] 추출\n4. 우유 거품을 동그랗게 띄우며 붓기"
+      },
+      {
+        type: "recipe",
+        keyword: "ㅈㅁㅇㄷ 자몽에이드 에이드",
+        title: "자몽 에이드 (Grapefruit Ade)",
+        content: "1. 16oz 얼음컵 준비\n2. 자몽 베이스 [60g] 펌핑 [베이스: 쇼케이스 냉장고 하단]\n3. 탄산수 [150ml] 조심스럽게 채우기\n4. [애플민트]와 [자몽 슬라이스] 올려 데코 후 빨대는 굵은 것으로 서빙"
+      },
+      {
+        type: "recipe",
+        keyword: "ㄸㄱㅇㄱㅌㅅㅁㄷ 딸기요거트스무디 블렌더",
+        title: "딸기 요거트 스무디 (Strawberry Smoothie)",
+        content: "1. 블렌더 컨테이너 준비\n2. 우유 [100ml] + 요거트 파우더 [3스푼] 넣기\n3. 딸기 리플 잼 [2펌프] [리플잼: 쇼케이스 냉장고]\n4. 스무디용 얼음 [1컵] 넣고 블렌더 [2번] 모드로 작동\n5. 잔에 담고 딸기 다이스 가니시 올리기"
+      },
+      {
+        type: "sos",
+        keyword: "ㅇㅅㅈ 영수증 프린터 포스기 결제 기계 안나올때",
+        title: "🚨 영수증 프린터 종이가 안 나올 때",
+        content: "1. 프린터 뚜껑을 열고 종이 방향 확인 (반질반질한 면이 [위로] 오게 다시 세팅)\n2. 프린터 뒷면 검은색 똑딱이 [전원 버튼]을 껐다 켜기\n3. 포스기 전원선 재체결 (포스기 아래 멀티탭 확인)\n4. 해결 안 될 시 대리점 연락처: [02-123-4567] 또는 [010-9876-5432]로 연락"
+      },
+      {
+        type: "sos",
+        keyword: "ㅁㅅㅇㅈ 에스프레소 머신 압력 물 안나옴 보일러",
+        title: "🚨 에스프레소 머신 압력이 떨어질 때",
+        content: "1. 머신 전면 압력 게이지가 [1.0~1.2 bar] 사이인지 확인\n2. 물 추출 버튼 눌렀을 때 물이 아예 안 나오는 경우 [하부 급수 밸브]가 잠겼는지 확인\n3. 머신 하부 배수구 역류 시 마감 세제 투입구 청소\n4. 엔지니어 긴급 연락처: [010-2222-3333] (점장 전언: 사장에게 선보고 후 통화할 것)"
+      },
+      {
+        type: "sos",
+        keyword: "ㅍㅅㄱ 포스기 다운 멈춤 렉 먹통 꺼짐",
+        title: "🚨 포스기 화면이 멈추거나 꺼졌을 때",
+        content: "1. 포스기 오른쪽 하단 구석의 [재부팅 버튼] 볼펜으로 3초간 누르기\n2. 전체 전원 불량 시 카운터 아래 메인 멀티탭 전원 확인\n3. 비상 수기 결제: 무선 단말기 [오른쪽 서랍 뒤] 꺼내서 실물카드 직접 결제 진행\n4. 수기 결제 매뉴얼은 단말기 바닥에 부착됨"
+      },
+      {
+        type: "sos",
+        keyword: "ㅂㅅㅇㄹㅊ 비상연락처 사장님 점장님 번호 교대근무",
+        title: "🚨 매장 비상 연락 리스트",
+        content: "- 사장님: [010-8888-8888] (긴급 기기/재고 문제)\n- 점장님: [010-7777-7777] (근무 펑크/고객 컴플레인)\n- ADT캡스 보안센터: [1588-6400]\n- 소방서: [119] / 경찰서: [112]"
+      },
+      {
+        type: "sos",
+        keyword: "ㅁㄱㅊㅅ 마감 청소 순서 주방마감 쓰레기",
+        title: "🧹 매장 마감 청소 체크리스트",
+        content: "1. 에스프레소 머신 백플러싱 청소 (약제 [1스푼] 넣고 진행)\n2. 온수기 및 제빙기 스쿱 소독 [살균 소독 스프레이 사용]\n3. 주방 하수구 거름망 비우고 락스물 뿌리기\n4. 쓰레기통 비우고 100L 봉투는 [매장 건물 뒤 분리수거장]에 배출\n5. 모든 냉난방기 Off 확인 및 정문 출입문 잠금 장치 이중 체크"
+      }
+    ];
+
+    // --- [2] 고객 관리 데이터 (type: "customer") ---
+    const defaultCustomers = [
+      {
+        type: "customer",
+        keyword: "01012345678 5678 홍길동 단골 텀블러",
+        title: "홍길동",
+        visits: 8,
+        isBlacklist: false,
+        content: "따뜻한 바닐라 라떼만 시키심. 시럽 1펌프 덜 넣어야 만족하심.\n[특징]: 언제나 개인 텀블러 사용하셔서 텀블러 할인 300원 차감 적용 필요."
+      },
+      {
+        type: "customer",
+        keyword: "01099998888 8888 김철수 요주의 반말 반품",
+        title: "김철수",
+        visits: 3,
+        isBlacklist: true,
+        content: "음료 온도가 미지근하다고 상습적으로 억지를 부리며 반말함.\n[대처 요령]: 최대한 감정을 섞지 말고 차분하게 응대하되 사장님께 즉시 보고할 것."
+      },
+      {
+        type: "customer",
+        keyword: "01055556666 6666 이영희 아이스아메리카노 단골",
+        title: "이영희",
+        visits: 12,
+        isBlacklist: false,
+        content: "언제나 아이스 아메리카노 테이크아웃. [빨대] 필수 동봉.\n[특징]: 가끔 간식거리를 사다 주셔서 인사 친절하게 드리기."
+      },
+      {
+        type: "customer",
+        keyword: "01077773333 3333 박민수 일반",
+        title: "박민수",
+        visits: 2,
+        isBlacklist: false,
+        content: "휘핑크림 많이 얹는 것을 좋아함. 인사성 매우 좋으심."
+      }
+    ];
+
+    // ==========================================================================
+    // 🧠 SYSTEM CORE ENGINE (Vanilla Javascript)
+    // ==========================================================================
+
+    // Korean Choseong (Initial Consonants) Table
+    const CHOSEONGS = [
+      'ㄱ', 'ㄲ', 'ㄴ', 'ㄷ', 'ㄸ', 'ㄹ', 'ㅁ', 'ㅂ', 'ㅃ', 'ㅅ', 'ㅆ', 'ㅇ', 'ㅈ', 'ㅉ', 'ㅊ', 'ㅋ', 'ㅌ', 'ㅍ', 'ㅎ'
+    ];
+
+    function getChoseong(str) {
+      if (!str) return '';
+      let result = '';
+      for (let i = 0; i < str.length; i++) {
+        const code = str.charCodeAt(i);
+        if (code >= 0xAC00 && code <= 0xD7A3) {
+          const index = Math.floor((code - 0xAC00) / 588);
+          result += CHOSEONGS[index];
+        } else {
+          result += str[i];
+        }
+      }
+      return result;
+    }
+
+    function formatContent(text) {
+      if (!text) return '';
+      let escaped = text
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+      
+      escaped = escaped.replace(/\[(.*?)\]/g, '<span class="highlight-badge">$1</span>');
+      
+      const lines = escaped.split('\n');
+      const formattedLines = lines.map(line => {
+        const trimmed = line.trim();
+        if (!trimmed) {
+          return '<div class="content-space"></div>';
+        }
+        
+        const listMatch = line.match(/^(\d+\.|-|※|\*)\s+(.*)$/);
+        if (listMatch) {
+          const marker = listMatch[1];
+          const content = listMatch[2];
+          return `<div class="content-line list-item">
+            <span class="line-marker">${marker}</span>
+            <span class="line-text">${content}</span>
+          </div>`;
+        }
+        
+        return `<div class="content-line">${line}</div>`;
+      });
+      
+      return formattedLines.join('');
+    }
+
+    // ==========================================
+    // 🖥️ UI ELEMENT REFERENCES & STATE
+    // ==========================================
+    const searchInput = document.getElementById('searchInput');
+    const searchClearBtn = document.getElementById('searchClearBtn');
+    const cardsGrid = document.getElementById('cardsGrid');
+    const emptyState = document.getElementById('emptyState');
+    const emptyTitle = document.getElementById('emptyTitle');
+    const emptyDesc = document.getElementById('emptyDesc');
+    const themeToggleBtn = document.getElementById('themeToggleBtn');
+    
+    // Zoom Modal DOM references
+    const zoomModal = document.getElementById('zoomModal');
+    const modalTitle = document.getElementById('modalTitle');
+    const modalBody = document.getElementById('modalBody');
+    const modalCloseBtn = document.getElementById('modalCloseBtn');
+    const modalCloseActionBtn = document.getElementById('modalCloseActionBtn');
+    const modalCopyBtn = document.getElementById('modalCopyBtn');
+    const toast = document.getElementById('toast');
+
+    // 👥 Tab DOM references
+    const tabRecipe = document.getElementById('tabRecipe');
+    const tabSos = document.getElementById('tabSos');
+    const tabCustomer = document.getElementById('tabCustomer');
+
+    // Global application state
+    let activeMainTab = 'recipe'; // 'recipe', 'sos', or 'customer'
+    let currentQuery = '';
+    let selectedItem = null;
+    let currentDb = [];
+
+    // ==========================================
+    // 🏷️ MAIN TAB CONTROLLER
+    // ==========================================
+    function switchMainTab(tabName) {
+      activeMainTab = tabName;
+      
+      tabRecipe.classList.remove('active');
+      tabSos.classList.remove('active');
+      tabCustomer.classList.remove('active');
+      
+      if (activeMainTab === 'recipe') {
+        tabRecipe.classList.add('active');
+        searchInput.placeholder = "메뉴명, 초성(ㅂㄴㄹ) 등으로 검색...";
+        emptyDesc.textContent = "단어의 초성만 입력하거나 다른 키워드를 입력해 보세요. (예: ㅂㄴㄹ, ㅇㅁㄹ)";
+      } else if (activeMainTab === 'sos') {
+        tabSos.classList.add('active');
+        searchInput.placeholder = "고장 증상, 매뉴얼 키워드 등으로 검색...";
+        emptyDesc.textContent = "고장 증상 또는 키워드를 입력해 보세요. (예: 포스기, 영수증, 머신)";
+      } else if (activeMainTab === 'customer') {
+        tabCustomer.classList.add('active');
+        searchInput.placeholder = "고객명, 연락처 뒤 4자리(1234) 등으로 검색...";
+        emptyDesc.textContent = "검색하려는 고객의 이름이나 연락처 뒷자리 또는 특징을 입력해 보세요. (예: 홍길동, 1234)";
+      }
+      
+      // Reset input when switching tabs
+      searchInput.value = '';
+      currentQuery = '';
+      searchClearBtn.style.display = 'none';
+      
+      renderCards();
+      searchInput.focus();
+    }
+
+    tabRecipe.addEventListener('click', () => switchMainTab('recipe'));
+    tabSos.addEventListener('click', () => switchMainTab('sos'));
+    tabCustomer.addEventListener('click', () => switchMainTab('customer'));
+
+    // ==========================================
+    // ⚙️ INITIALIZATION & RENDER LOGIC
+    // ==========================================
+    
+    // Initialize Theme
+    const savedTheme = localStorage.getItem('cafe-theme') || 'dark';
+    document.documentElement.setAttribute('data-theme', savedTheme);
+    updateThemeToggleUI(savedTheme);
+
+    function updateThemeToggleUI(theme) {
+      if (theme === 'dark') {
+        themeToggleBtn.textContent = '☀️';
+        themeToggleBtn.setAttribute('title', '라이트 모드로 전환');
+      } else {
+        themeToggleBtn.textContent = '🌙';
+        themeToggleBtn.setAttribute('title', '다크 모드로 전환');
+      }
+    }
+
+    themeToggleBtn.addEventListener('click', () => {
+      const currentTheme = document.documentElement.getAttribute('data-theme');
+      const nextTheme = currentTheme === 'dark' ? 'light' : 'dark';
+      document.documentElement.setAttribute('data-theme', nextTheme);
+      localStorage.setItem('cafe-theme', nextTheme);
+      updateThemeToggleUI(nextTheme);
+    });
+
+    // Render Cards in Grid
+    function renderCards() {
+      cardsGrid.innerHTML = '';
+      
+      const filtered = currentDb.filter(item => {
+        // Filter by Active Main Tab Type
+        if (item.type !== activeMainTab) {
+          return false;
+        }
+        
+        // Filter by search query
+        if (!currentQuery) return true;
+        
+        const q = currentQuery.toLowerCase().trim();
+        const titleLower = item.title.toLowerCase();
+        const contentLower = item.content.toLowerCase();
+        const keywordLower = (item.keyword || '').toLowerCase();
+        
+        if (titleLower.includes(q) || contentLower.includes(q) || keywordLower.includes(q)) {
+          return true;
+        }
+        
+        const queryChoseong = getChoseong(q);
+        const titleChoseong = getChoseong(titleLower);
+        const keywordChoseong = getChoseong(keywordLower);
+        
+        if (titleChoseong.includes(queryChoseong) || keywordChoseong.includes(queryChoseong)) {
+          return true;
+        }
+        
+        return false;
+      });
+
+      if (filtered.length === 0) {
+        cardsGrid.style.display = 'none';
+        emptyState.style.display = 'flex';
+      } else {
+        cardsGrid.style.display = 'grid';
+        emptyState.style.display = 'none';
+        
+        filtered.forEach(item => {
+          const card = document.createElement('article');
+          
+          if (item.type === 'customer') {
+            // Render Customer Card with Conditional Badging & Styling
+            let badgeHtml = '';
+            let cardExtraClass = 'card-customer';
+            
+            if (item.isBlacklist) {
+              badgeHtml = `<span class="card-type-badge" style="background-color:#E74C3C; color:#FFFFFF; font-weight:800;">🌶️ 요주의</span>`;
+              cardExtraClass += ' card-blacklist';
+            } else if (item.visits >= 5) {
+              badgeHtml = `<span class="card-type-badge" style="background-color:#F1C40F; color:#3F3000; font-weight:800;">🏅 단골</span>`;
+            }
+            
+            card.className = `card ${cardExtraClass}`;
+            
+            card.innerHTML = `
+              <div class="card-header">
+                <div class="card-title-group">
+                  <h3 class="card-title">${item.title} ${badgeHtml}</h3>
+                </div>
+                <span class="card-type-badge card-type-customer">방문 ${item.visits}회</span>
+              </div>
+              <div class="card-body">
+                <div class="card-content">${formatContent(item.content)}</div>
+              </div>
+            `;
+          } else {
+            // Render Recipe or SOS Card
+            const typeClass = item.type === 'recipe' ? 'card-recipe' : 'card-sos';
+            card.className = `card ${typeClass}`;
+            
+            const badgeLabel = item.type === 'recipe' ? '레시피' : '비상';
+            const badgeClass = item.type === 'recipe' ? 'card-type-recipe' : 'card-type-sos';
+            
+            card.innerHTML = `
+              <div class="card-header">
+                <div class="card-title-group">
+                  <h3 class="card-title">${item.title}</h3>
+                </div>
+                <span class="card-type-badge ${badgeClass}">${badgeLabel}</span>
+              </div>
+              <div class="card-body">
+                <div class="card-content">${formatContent(item.content)}</div>
+              </div>
+            `;
+          }
+          
+          card.addEventListener('click', () => {
+            openZoomModal(item);
+          });
+          
+          cardsGrid.appendChild(card);
+        });
+      }
+    }
+
+    // ==========================================
+    // 🔍 SEARCH INPUT HANDLERS
+    // ==========================================
+    searchInput.addEventListener('input', (e) => {
+      currentQuery = e.target.value;
+      if (currentQuery.length > 0) {
+        searchClearBtn.style.display = 'flex';
+      } else {
+        searchClearBtn.style.display = 'none';
+      }
+      renderCards();
+    });
+
+    searchClearBtn.addEventListener('click', () => {
+      clearSearch();
+    });
+
+    function clearSearch() {
+      searchInput.value = '';
+      currentQuery = '';
+      searchClearBtn.style.display = 'none';
+      renderCards();
+      searchInput.focus();
+    }
+
+    // ==========================================
+    // 💡 ZOOM MODAL EVENT LOGIC
+    // ==========================================
+    function openZoomModal(item) {
+      selectedItem = item;
+      
+      if (item.type === 'customer') {
+        let badgeHtml = '';
+        if (item.isBlacklist) {
+          badgeHtml = ` <span class="highlight-badge" style="background-color:#E74C3C; border:1px solid #E74C3C; color:#FFFFFF; font-weight:800; font-size:1rem; vertical-align:middle;">🌶️ 요주의</span>`;
+        } else if (item.visits >= 5) {
+          badgeHtml = ` <span class="highlight-badge" style="background-color:#F1C40F; border:1px solid #F1C40F; color:#3F3000; font-weight:800; font-size:1rem; vertical-align:middle;">🏅 단골</span>`;
+        }
+        
+        modalTitle.innerHTML = `${item.title}${badgeHtml} <span style="font-size:0.95rem; color:var(--text-muted); font-weight:normal; margin-left:8px;">방문 ${item.visits}회</span>`;
+      } else {
+        modalTitle.textContent = item.title;
+      }
+      
+      modalBody.innerHTML = formatContent(item.content);
+      zoomModal.classList.add('active');
+    }
+
+    function closeZoomModal() {
+      zoomModal.classList.remove('active');
+      selectedItem = null;
+    }
+
+    modalCloseBtn.addEventListener('click', closeZoomModal);
+    modalCloseActionBtn.addEventListener('click', closeZoomModal);
+    
+    zoomModal.addEventListener('click', (e) => {
+      if (e.target === zoomModal) {
+        closeZoomModal();
+      }
+    });
+
+    // Copy Content to Clipboard
+    modalCopyBtn.addEventListener('click', () => {
+      if (!selectedItem) return;
+      
+      const plainText = selectedItem.content;
+      
+      navigator.clipboard.writeText(plainText).then(() => {
+        showToast();
+      }).catch(err => {
+        console.error('클립보드 복사 실패:', err);
+      });
+    });
+
+    function showToast() {
+      toast.classList.add('active');
+      setTimeout(() => {
+        toast.classList.remove('active');
+      }, 1500);
+    }
+
+    // ==========================================
+    // ⌨️ KEYBOARD SHORTCUTS FOR CONSOLE
+    // ==========================================
+    window.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') {
+        if (zoomModal.classList.contains('active')) {
+          closeZoomModal();
+        } else if (editorModal.classList.contains('active')) {
+          closeEditorModal();
+        } else if (searchInput.value !== '') {
+          clearSearch();
+        }
+      }
+      
+      // Tab: Cycle between main tabs
+      if (e.key === 'Tab' && !zoomModal.classList.contains('active') && !editorModal.classList.contains('active')) {
+        e.preventDefault();
+        let nextTab = 'recipe';
+        if (activeMainTab === 'recipe') {
+          nextTab = 'sos';
+        } else if (activeMainTab === 'sos') {
+          nextTab = 'customer';
+        } else if (activeMainTab === 'customer') {
+          nextTab = 'recipe';
+        }
+        switchMainTab(nextTab);
+      }
+    });
+
+    // ==========================================
+    // 🚀 SERVICE WORKER / OFFLINE BOOTSTRAP
+    // ==========================================
+    if ('serviceWorker' in navigator && window.location.protocol.startsWith('http')) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('./sw.js')
+          .then(reg => console.log('서비스 워커가 정상 작동 중입니다.', reg.scope))
+          .catch(err => console.warn('서비스 워커 등록 실패 (단일 로컬 실행은 정상 작동):', err));
+      });
+    }
+
+    // ==========================================
+    // ⚙️ ADMIN MODE CONTROLLER & CRUD LOGIC
+    // ==========================================
+    const adminToggleBtn = document.getElementById('adminToggleBtn');
+    const searchScreen = document.getElementById('searchScreen');
+    const adminScreen = document.getElementById('adminScreen');
+    const adminTableBody = document.getElementById('adminTableBody');
+    
+    // Form and Form Modal
+    const editorModal = document.getElementById('editorModal');
+    const editorForm = document.getElementById('editorForm');
+    const editItemId = document.getElementById('editItemId');
+    const itemTitle = document.getElementById('itemTitle');
+    const itemKeyword = document.getElementById('itemKeyword');
+    const itemContent = document.getElementById('itemContent');
+    const editorModalTitle = document.getElementById('editorModalTitle');
+    
+    const editorModalCloseBtn = document.getElementById('editorModalCloseBtn');
+    const editorCancelBtn = document.getElementById('editorCancelBtn');
+    const addNewBtn = document.getElementById('addNewBtn');
+    
+    // Backup buttons
+    const exportBtn = document.getElementById('exportBtn');
+    const importFile = document.getElementById('importFile');
+    const resetBtn = document.getElementById('resetBtn');
+
+    const closeAdminBtn = document.getElementById('closeAdminBtn');
+    let adminModeActive = false;
+
+    // Toggle customer fields in editor form
+    const typeRadios = document.getElementsByName('itemType');
+    const customerFormFields = document.getElementById('customerFormFields');
+    
+    function toggleFormFields() {
+      const selectedType = document.querySelector('input[name="itemType"]:checked').value;
+      if (selectedType === 'customer') {
+        customerFormFields.style.display = 'block';
+      } else {
+        customerFormFields.style.display = 'none';
+      }
+    }
+    
+    for (const radio of typeRadios) {
+      radio.addEventListener('change', toggleFormFields);
+    }
+
+    function setAdminMode(active) {
+      adminModeActive = active;
+      if (adminModeActive) {
+        adminToggleBtn.textContent = '🔍';
+        adminToggleBtn.setAttribute('title', '검색 모드로 돌아가기');
+        searchScreen.style.display = 'none';
+        adminScreen.style.display = 'block';
+        renderAdminTable();
+      } else {
+        adminToggleBtn.textContent = '⚙️';
+        adminToggleBtn.setAttribute('title', '사장님 설정');
+        searchScreen.style.display = 'block';
+        adminScreen.style.display = 'none';
+        renderCards();
+      }
+    }
+
+    adminToggleBtn.addEventListener('click', () => {
+      setAdminMode(!adminModeActive);
+    });
+
+    closeAdminBtn.addEventListener('click', () => {
+      setAdminMode(false);
+    });
+
+    // Render Admin Management Table
+    function renderAdminTable() {
+      adminTableBody.innerHTML = '';
+      
+      currentDb.forEach(item => {
+        const tr = document.createElement('tr');
+        
+        let typeLabel = '';
+        let badgeClass = '';
+        if (item.type === 'recipe') {
+          typeLabel = '☕ 레시피';
+          badgeClass = 'card-type-recipe';
+        } else if (item.type === 'sos') {
+          typeLabel = '🚨 매뉴얼';
+          badgeClass = 'card-type-sos';
+        } else if (item.type === 'customer') {
+          typeLabel = '👥 고객';
+          badgeClass = 'card-type-customer';
+        }
+        
+        tr.innerHTML = `
+          <td><span class="card-type-badge ${badgeClass}" style="display:inline-block;">${typeLabel}</span></td>
+          <td style="font-weight: 700;">${item.title}</td>
+          <td style="color: var(--text-muted); font-size: 0.85rem;">${item.keyword || ''}</td>
+          <td style="text-align: center;">
+            <div class="table-actions">
+              <button class="table-btn" onclick="openEditForm(${item.id})">✏️ 수정</button>
+              <button class="table-btn table-btn-danger" onclick="deleteAdminItem(${item.id})">🗑️ 삭제</button>
+            </div>
+          </td>
+        `;
+        adminTableBody.appendChild(tr);
+      });
+    }
+
+    // Modal Control: Open Add Form
+    addNewBtn.addEventListener('click', () => {
+      editorForm.reset();
+      editItemId.value = '';
+      editorModalTitle.textContent = '새 레시피/매뉴얼/고객 추가';
+      document.querySelector('input[name="itemType"][value="recipe"]').checked = true;
+      document.querySelector('input[name="itemIsBlacklist"][value="false"]').checked = true;
+      toggleFormFields();
+      editorModal.classList.add('active');
+    });
+
+    // Close Modal
+    function closeEditorModal() {
+      editorModal.classList.remove('active');
+    }
+    editorModalCloseBtn.addEventListener('click', closeEditorModal);
+    editorCancelBtn.addEventListener('click', closeEditorModal);
+    
+    editorModal.addEventListener('click', (e) => {
+      if (e.target === editorModal) {
+        closeEditorModal();
+      }
+    });
+
+    // Edit Item Setup
+    window.openEditForm = function(id) {
+      const item = currentDb.find(x => x.id === id);
+      if (!item) return;
+      
+      editItemId.value = item.id;
+      editorModalTitle.textContent = '항목 수정';
+      
+      const radios = document.getElementsByName('itemType');
+      for (const radio of radios) {
+        if (radio.value === item.type) {
+          radio.checked = true;
+        }
+      }
+      toggleFormFields();
+      
+      itemTitle.value = item.title;
+      itemKeyword.value = item.keyword || '';
+      itemContent.value = item.content || '';
+      
+      if (item.type === 'customer') {
+        document.getElementById('itemVisits').value = item.visits || 0;
+        const blacklistRadios = document.getElementsByName('itemIsBlacklist');
+        for (const radio of blacklistRadios) {
+          if (radio.value === String(item.isBlacklist)) {
+            radio.checked = true;
+          }
+        }
+      } else {
+        document.getElementById('itemVisits').value = 0;
+        document.querySelector('input[name="itemIsBlacklist"][value="false"]').checked = true;
+      }
+      
+      editorModal.classList.add('active');
+    };
+
+    // Save/Update Submit Form
+    editorForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      
+      const id = editItemId.value;
+      const type = document.querySelector('input[name="itemType"]:checked').value;
+      const title = itemTitle.value.trim();
+      const keyword = itemKeyword.value.trim();
+      const content = itemContent.value;
+      
+      let visits = 0;
+      let isBlacklist = false;
+      
+      if (type === 'customer') {
+        visits = parseInt(document.getElementById('itemVisits').value, 10) || 0;
+        isBlacklist = document.querySelector('input[name="itemIsBlacklist"]:checked').value === 'true';
+      }
+      
+      if (id) {
+        // Update existing item
+        const index = currentDb.findIndex(x => x.id == id);
+        if (index !== -1) {
+          currentDb[index] = {
+            ...currentDb[index],
+            type,
+            title,
+            keyword,
+            content,
+            visits,
+            isBlacklist
+          };
+        }
+      } else {
+        // Create new item
+        const newItem = {
+          id: Date.now(),
+          type,
+          title,
+          keyword,
+          content,
+          visits,
+          isBlacklist
+        };
+        currentDb.push(newItem);
+      }
+      
+      saveDb();
+      closeEditorModal();
+      renderAdminTable();
+      showToastMessage('저장 완료!');
+    });
+
+    // Delete Item
+    window.deleteAdminItem = function(id) {
+      const item = currentDb.find(x => x.id === id);
+      if (!item) return;
+      
+      if (confirm(`'${item.title}' 항목을 삭제하시겠습니까?`)) {
+        currentDb = currentDb.filter(x => x.id !== id);
+        saveDb();
+        renderAdminTable();
+        showToastMessage('삭제 완료!');
+      }
+    };
+
+    // Toast utility with custom message
+    function showToastMessage(msg) {
+      toast.textContent = msg;
+      toast.classList.add('active');
+      setTimeout(() => {
+        toast.classList.remove('active');
+      }, 1500);
+    }
+
+    // Export Backup (JSON Download)
+    exportBtn.addEventListener('click', () => {
+      const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(currentDb, null, 2));
+      const downloadAnchor = document.createElement('a');
+      downloadAnchor.setAttribute("href", dataStr);
+      downloadAnchor.setAttribute("download", "cafe_quick_cheat_backup.json");
+      document.body.appendChild(downloadAnchor);
+      downloadAnchor.click();
+      downloadAnchor.remove();
+      showToastMessage('백업 다운로드 시작!');
+    });
+
+    // Import Backup
+    importFile.addEventListener('change', (e) => {
+      const file = e.target.files[0];
+      if (!file) return;
+      
+      const reader = new FileReader();
+      reader.onload = function(evt) {
+        try {
+          const parsed = JSON.parse(evt.target.result);
+          if (Array.isArray(parsed)) {
+            parsed.forEach((item, index) => {
+              if (!item.id) item.id = Date.now() + index;
+            });
+            currentDb = parsed;
+            saveDb();
+            renderAdminTable();
+            showToastMessage('가져오기 성공!');
+          } else {
+            alert('올바른 백업 파일 형식이 아닙니다 (배열 형태 필요).');
+          }
+        } catch (err) {
+          alert('파일을 파싱하는 중 오류가 발생했습니다.');
+        }
+      };
+      reader.readAsText(file);
+      e.target.value = '';
+    });
+
+    // Reset to hardcoded default database
+    resetBtn.addEventListener('click', () => {
+      if (confirm('모든 사용자 정의 변경사항을 지우고 파일 기본 제공 데이터로 되돌리시겠습니까? 이 작업은 되돌릴 수 없습니다.')) {
+        localStorage.removeItem('cafe-db');
+        initDb();
+        renderAdminTable();
+        showToastMessage('기본값 초기화 완료!');
+      }
+    });
+
+    // Initialize Database from LocalStorage or Fallback to Hardcoded DB
+    function initDb() {
+      const stored = localStorage.getItem('cafe-db');
+      if (stored) {
+        try {
+          currentDb = JSON.parse(stored);
+        } catch (e) {
+          console.error("로컬 데이터를 불러오는 중 오류가 발생했습니다. 기본값으로 설정합니다.", e);
+          currentDb = [...defaultRecipes, ...defaultCustomers];
+        }
+      } else {
+        currentDb = [...defaultRecipes, ...defaultCustomers];
+      }
+      
+      let modified = false;
+      currentDb.forEach((item, index) => {
+        if (!item.id) {
+          item.id = Date.now() + index;
+          modified = true;
+        }
+      });
+      if (modified) {
+        saveDb();
+      }
+    }
+
+    function saveDb() {
+      localStorage.setItem('cafe-db', JSON.stringify(currentDb));
+    }
+
+    // Run first render
+    initDb();
+    renderCards();
+  </script>
+</body>
+</html>
